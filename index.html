@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>麻将胡了 · 一局闲话与牌桌之乐</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #f3f9f6;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      line-height: 1.7;
+      color: #1c2e2c;
+      padding: 2rem 1.2rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* 网格卡片基底 */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.2rem;
+      margin: 2rem 0;
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 1.5rem 1.2rem;
+      box-shadow: 0 6px 20px rgba(0, 40, 30, 0.06);
+      transition: all 0.15s ease;
+      border: 1px solid #d6ebe4;
+    }
+
+    .card:hover {
+      box-shadow: 0 10px 28px rgba(20, 90, 70, 0.08);
+      transform: translateY(-3px);
+      border-color: #87c7b3;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      color: #0f4b40;
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.01em;
+      border-left: 4px solid #3aa68c;
+      padding-left: 0.7rem;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: #2d4b44;
+      margin-bottom: 0.4rem;
+    }
+
+    /* 标题与导语 */
+    .hero {
+      text-align: left;
+      margin-bottom: 1.8rem;
+    }
+
+    .hero h1 {
+      font-size: 2.4rem;
+      font-weight: 600;
+      line-height: 1.2;
+      color: #0d3d35;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #0e4f44, #2f8f79);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero .sub {
+      font-size: 1.1rem;
+      color: #3b6a5f;
+      border-bottom: 2px solid #c8e3da;
+      padding-bottom: 0.9rem;
+      max-width: 85%;
+    }
+
+    .intro {
+      background: #dff0ea;
+      padding: 1.6rem 1.8rem;
+      border-radius: 28px;
+      margin: 1.8rem 0 2.2rem 0;
+      font-size: 1rem;
+      color: #1c3c34;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+      border-left: 6px solid #2f9b83;
+    }
+
+    .intro p {
+      margin-bottom: 0.6rem;
+    }
+
+    .intro strong {
+      color: #0d5a4a;
+      font-weight: 600;
+    }
+
+    /* 段落正文 */
+    .content p {
+      margin: 1.3rem 0;
+    }
+
+    .content p:first-of-type {
+      margin-top: 0;
+    }
+
+    /* 引用 / 提示框 */
+    .quote-note {
+      background: #e5f3ee;
+      border-radius: 20px;
+      padding: 1.6rem 1.8rem;
+      margin: 2rem 0;
+      border-left: 5px solid #3aa68c;
+      color: #1e423a;
+      position: relative;
+    }
+
+    .quote-note::before {
+      content: "📌 闲话";
+      display: block;
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      color: #2d7f6b;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .quote-note p {
+      margin: 0.5rem 0;
+    }
+
+    .quote-note .ref {
+      display: inline-block;
+      background: #c4dfd4;
+      padding: 0.1rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      color: #0a3d33;
+      margin-top: 0.8rem;
+    }
+
+    /* FAQ 摘要 – 极简折叠感 */
+    .faq-mini {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin: 2.2rem 0 1.6rem;
+    }
+
+    .faq-item {
+      background: white;
+      padding: 1rem 1.4rem;
+      border-radius: 60px;
+      border: 1px solid #cde4db;
+      transition: all 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .faq-item span {
+      font-weight: 500;
+      color: #0d5042;
+      min-width: 3.2rem;
+    }
+
+    .faq-item .q {
+      color: #2b5e52;
+      flex: 1;
+    }
+
+    .faq-item .a {
+      color: #548577;
+      font-size: 0.9rem;
+      text-align: right;
+      max-width: 55%;
+    }
+
+    /* 访问句/链接嵌入 */
+    .visit-line {
+      background: #eef8f4;
+      border-radius: 40px;
+      padding: 1.5rem 1.8rem;
+      margin: 1.8rem 0 1rem;
+      text-align: left;
+      border: 1px solid #b8d9ce;
+      font-size: 1rem;
+    }
+
+    .visit-line a {
+      color: #156b58;
+      text-decoration: none;
+      font-weight: 600;
+      border-bottom: 2px solid #3aa68c;
+      transition: border 0.15s, color 0.15s;
+    }
+
+    .visit-line a:hover {
+      color: #0d4f42;
+      border-bottom-color: #0c5d4b;
+    }
+
+    .footer-note {
+      margin-top: 2.8rem;
+      font-size: 0.9rem;
+      color: #507a6e;
+      border-top: 1px solid #c5dbd2;
+      padding-top: 1.5rem;
+      text-align: left;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.6rem;
+    }
+
+    .footer-note span {
+      opacity: 0.7;
+    }
+
+    hr {
+      border: none;
+      border-top: 2px dotted #b3d3c7;
+      margin: 2.2rem 0;
+    }
+
+    /* 移动端细节 */
+    @media (max-width: 480px) {
+      body {
+        padding: 1.4rem 1rem;
+      }
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .hero .sub {
+        max-width: 100%;
+        font-size: 1rem;
+      }
+      .intro {
+        padding: 1.2rem 1.2rem;
+      }
+      .card-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .faq-item {
+        border-radius: 40px;
+        flex-wrap: wrap;
+      }
+      .faq-item .a {
+        max-width: 100%;
+        text-align: left;
+        margin-top: 0.2rem;
+      }
+      .visit-line {
+        padding: 1.2rem 1.2rem;
+      }
+    }
+
+    @media (min-width: 600px) {
+      .card-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <!-- hero 标题 + 导语 -->
+  <div class="hero">
+    <h1>麻将胡了 · 一局闲话</h1>
+    <div class="sub">牌起牌落，不过是一段放轻松的时光</div>
+  </div>
+
+  <!-- 简短引言 -->
+  <div class="intro">
+    <p>我们常常把「<strong>麻将胡了</strong>」挂在嘴边，仿佛这四个字自带一种轻快的节奏。它不只是一次和牌的宣告，更像是一局游戏后自然而然的笑意。从最初摸牌的犹豫，到听牌时的心跳，再到最后推倒牌墙的干脆——每一个环节都藏着与人互动的温度。</p>
+    <p>本篇聊聊牌桌边那些真实、平常的瞬间，以及为什么很多人会在闲暇时想起它。</p>
+  </div>
+
+  <!-- 正文段落 -->
+  <div class="content">
+    <p>麻将的魅力，有一半在「胡」之外。摸牌、碰杠、观察对手的神情，偶尔因为一张牌而集体哄笑。相比输赢，更让人记住的是牌局里的对话和等待时的期待。而「胡了」更像是一个句号，把一段互动暂时收住，然后洗牌再来。</p>
+    <p>很多人在周末约上三五好友，摆上一张方桌。没有手机消息的干扰，只有麻将牌碰撞的清脆声响。有人说这是成年人的沙坑游戏，规则简单，却有无数种牌型组合。你永远不知道下一张摸到什么，就像生活里那些小小的意外——大部分平淡，偶尔惊喜。</p>
+    <p>对于不常打牌的人，可能会疑惑：为什么有人能为一局牌投入整个下午？答案可能不在牌本身，而在那个过程里放松、交谈、甚至短暂放空的状态。当你专注于手牌和局势，反而从日常的琐碎中抽离出来。这是一种温和的专注。</p>
+  </div>
+
+  <!-- 卡片网格：特点与场景 -->
+  <div class="card-grid">
+    <div class="card">
+      <h3>节奏自在</h3>
+      <p>每局约10–20分钟，不长不短。适合茶歇、饭后，或一个无所事事的午后。</p>
+    </div>
+    <div class="card">
+      <h3>社交属性</h3>
+      <p>面对面交流，不用盯着屏幕。几句调侃、一个眼神，都比表情包更生动。</p>
+    </div>
+    <div class="card">
+      <h3>变化丰富</h3>
+      <p>牌型组合从不重复，每一局都是新的排列。听牌那一刻的不确定感，正是乐趣所在。</p>
+    </div>
+    <div class="card">
+      <h3>低门槛</h3>
+      <p>规则不难，新手看两圈就能上手。没有人会因为打得不好而被冷落——边打边学本就是常态。</p>
+    </div>
+  </div>
+
+  <!-- 引用提示块 -->
+  <div class="quote-note">
+    <p>“麻将胡了并不是终点，而是一个重新开始的信号。牌桌上没有真正的输家，只要大家愿意坐下来，下一局总会带来新的可能性。”</p>
+    <p>——某位把麻将当作周末仪式感的程序员说。他的话或许也代表了很多人的感受：输赢是暂时的，相聚才是常态。</p>
+    <span class="ref">💬 摘自牌友闲谈</span>
+  </div>
+
+  <!-- FAQ 摘要 (简约卡片样式) -->
+  <div class="faq-mini">
+    <div class="faq-item">
+      <span>❓</span>
+      <span class="q">新手适合玩吗？</span>
+      <span class="a">当然可以，规则简单，入门很快。</span>
+    </div>
+    <div class="faq-item">
+      <span>❓</span>
+      <span class="q">一局大概多久？</span>
+      <span class="a">通常10–20分钟，节奏舒服。</span>
+    </div>
+    <div class="faq-item">
+      <span>❓</span>
+      <span class="q">需要多少人？</span>
+      <span class="a">四人最经典，三人也有玩法。</span>
+    </div>
+  </div>
+
+  <!-- 访问句链接嵌入 -->
+  <div class="visit-line">
+    🀄 如果你也喜欢这种节奏，不妨去体验一下 <a href="https://web-official-mahjong.com">麻将胡了</a>，它把牌桌上的从容和期待搬到了线上，但不改变那份轻松的底色。
+  </div>
+
+  <!-- 额外一段自然的结尾 -->
+  <p style="color: #386b5e; font-size: 0.98rem; margin-top: 0.8rem;">
+    不论线上线下，麻将的本质始终是人与人之间的连接。规则是固定的，但每一局的氛围、对话和笑声却是独一无二的。下次有人喊出「胡了」，不妨也报以一笑——然后洗牌，开始新的一局。
+  </p>
+
+  <hr>
+
+  <!-- 页脚 -->
+  <div class="footer-note">
+    <span>🎴 一局闲话 · 麻将胡了</span>
+    <span>写于一个想打牌的傍晚</span>
+  </div>
+</div>
+</body>
+</html>

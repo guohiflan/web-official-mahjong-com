@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://guohiflan.github.io/web-official-mahjong-com/sitemap.xml
